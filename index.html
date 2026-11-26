@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jejak Nabi — Kisah Keteladanan Berbasis Animasi Pendek</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Amiri (untuk kaligrafi Arab) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Konfigurasi Warna & Tema Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        arab: ['"Amiri"', 'serif'],
+                    },
+                    colors: {
+                        sage: {
+                            50: '#F4F7F4',
+                            100: '#E3EBE4',
+                            200: '#C7D7C9',
+                            300: '#A1BCA5',
+                            400: '#7C9E82',
+                            500: '#5E8264',
+                            600: '#49674E',
+                            700: '#3B533F',
+                            800: '#314435',
+                            900: '#29382C',
+                        },
+                        beige: {
+                            50: '#FDFBF7',
+                            100: '#FAF6EE',
+                            200: '#F3EBDD',
+                            300: '#E8DAC3',
+                            400: '#D9C3A3',
+                        },
+                        pastelOrange: {
+                            50: '#FFF8F3',
+                            100: '#FFEDE0',
+                            200: '#FFD6BA',
+                            300: '#FFB88A',
+                            400: '#FF9859',
+                            500: '#F57C36',
+                        },
+                        darkBg: '#141916',
+                        darkCard: '#1D2420',
+                        darkBorder: '#2C3630'
+                    },
+                    borderRadius: {
+                        '3xl': '1.75rem',
+                        '4xl': '2.25rem',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Pengaturan dasar agar terasa seperti aplikasi cerita interaktif */
+        body {
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(124, 158, 130, 0.35);
+            border-radius: 999px;
+        }
+
+        /* ================= KEYFRAMES ANIMASI PENDEK KISAH NABI ================= */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes waveMove {
+            0%, 100% { transform: translateX(0px) rotate(0deg); }
+            25% { transform: translateX(6px) rotate(2deg); }
+            75% { transform: translateX(-6px) rotate(-2deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.75; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); }
+        }
+
+        @keyframes flickerFire {
+            0%, 100% { transform: scaleY(1) skewX(0deg); }
+            33% { transform: scaleY(1.1) skewX(3deg); }
+            66% { transform: scaleY(0.92) skewX(-3deg); }
+        }
+
+        @keyframes partSeaLeft {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(-18px); }
+        }
+
+        @keyframes partSeaRight {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(18px); }
+        }
+
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .anim-float { animation: floatSlow 3.2s ease-in-out infinite; }
+        .anim-wave { animation: waveMove 3.5s ease-in-out infinite; transform-origin: center bottom; }
+        .anim-glow { animation: pulseGlow 2.8s ease-in-out infinite; transform-origin: center; }
+        .anim-fire { animation: flickerFire 1.4s ease-in-out infinite; transform-origin: bottom center; }
+        .anim-sea-left { animation: partSeaLeft 4s ease-in-out infinite; }
+        .anim-sea-right { animation: partSeaRight 4s ease-in-out infinite; }
+        .anim-spin-slow { animation: spinSlow 24s linear infinite; transform-origin: center; }
+        .anim-scene-enter { animation: fadeSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* Pause animasi saat tombol pause ditekan */
+        .paused * {
+            animation-play-state: paused !important;
+        }
+    </style>
+</head>
+<body class="bg-beige-100 text-sage-900 dark:bg-darkBg dark:text-beige-100 min-h-screen flex justify-center transition-colors duration-300">
+
+    <!-- Container Utama Responsif (Mobile-First Card hingga Tablet/Desktop) -->
+    <div class="w-full max-w-2xl bg-beige-50 dark:bg-darkBg min-h-screen sm:min-h-[92vh] sm:my-6 sm:rounded-[2.5rem] sm:shadow-2xl sm:border sm:border-beige-200 dark:sm:border-darkBorder flex flex-col relative overflow-hidden">
+
+        <!-- Header Atas -->
+        <header class="px-6 pt-6 pb-4 flex items-center justify-between sticky top-0 z-20 bg-beige-50/90 dark:bg-darkBg/90 backdrop-blur-md border-b border-beige-200/50 dark:border-darkBorder/60">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center text-white shadow-md shadow-sage-500/20">
+                    <i data-lucide="compass" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-sage-900 dark:text-beige-50 leading-none">Jejak Nabi</h1>
+                    <p class="text-xs font-medium text-sage-500 dark:text-sage-400 mt-1">Kisah Keteladanan Berbasis Animasi Pendek</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <!-- Counter Kisah Selesai -->
+                <div class="flex items-center gap-1.5 bg-pastelOrange-100 dark:bg-pastelOrange-500/15 text-pastelOrange-500 dark:text-pastelOrange-300 px-3 py-1.5 rounded-full text-xs font-bold" title="Kisah Selesai Dipelajari">
+                    <i data-lucide="award" class="w-3.5 h-3.5"></i>
+                    <span id="completed-badge">0/25</span>
+                </div>
+
+                <!-- Toggle Dark/Light Mode -->
+                <button id="theme-toggle" aria-label="Ubah Tema" class="w-10 h-10 rounded-full bg-white dark:bg-darkCard border border-beige-200 dark:border-darkBorder flex items-center justify-center text-sage-700 dark:text-beige-200 hover:bg-sage-50 active:scale-90 transition-all">
+                    <i data-lucide="moon" class="w-4 h-4 hidden dark:block text-pastelOrange-300"></i>
+                    <i data-lucide="sun" class="w-4 h-4 block dark:hidden text-pastelOrange-500"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Konten Utama -->
+        <main class="flex-1 px-6 py-5 overflow-y-auto space-y-6">
+
+            <!-- ================= VIEW 1: BERANDA PILIHAN KISAH NABI ================= -->
+            <section id="view-library" class="space-y-5 anim-scene-enter">
+                
+                <!-- Hero Banner Singkat -->
+                <div class="bg-gradient-to-br from-sage-500 to-sage-600 dark:from-sage-700 dark:to-sage-800 rounded-3xl p-5 sm:p-6 text-white relative overflow-hidden shadow-lg shadow-sage-500/15">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/10 pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider bg-white/15 px-3 py-1 rounded-full mb-2">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pastelOrange-200"></i> 25 Kisah & Animasi Pendek
+                        </span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold leading-snug">Menelusuri Cahaya Teladan 25 Nabi & Rasul</h2>
+                        <p class="text-xs sm:text-sm text-sage-100 mt-1.5 leading-relaxed">
+                            Pilih satu dari 25 utusan Allah di bawah ini untuk menyaksikan animasi pendek tiap babak perjalanan dan memetik hikmahnya.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Kotak Pencarian Cepat 25 Nabi -->
+                <div class="relative">
+                    <i data-lucide="search" class="w-4 h-4 text-sage-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" id="search-prophet" placeholder="Cari nama nabi atau keteladanan (misal: Yusuf, Sabar, Musa)..." class="w-full pl-11 pr-4 py-3 rounded-2xl bg-white dark:bg-darkCard border border-beige-200 dark:border-darkBorder text-xs sm:text-sm text-sage-900 dark:text-beige-100 placeholder-sage-400 focus:outline-none focus:border-sage-500 transition-colors">
+                </div>
+
+                <!-- Filter Kategori Keteladanan -->
+                <div class="flex gap-2 overflow-x-auto pb-1">
+                    <button data-filter="all" class="filter-btn active shrink-0 px-4 py-2 rounded-2xl text-xs font-bold bg-sage-500 text-white shadow-xs transition-all">
+                        Semua Kisah
+                    </button>
+                    <button data-filter="kesabaran" class="filter-btn shrink-0 px-4 py-2 rounded-2xl text-xs font-bold bg-white dark:bg-darkCard text-sage-700 dark:text-beige-200 border border-beige-200 dark:border-darkBorder transition-all">
+                        Kesabaran & Tawakal
+                    </button>
+                    <button data-filter="keberanian" class="filter-btn shrink-0 px-4 py-2 rounded-2xl text-xs font-bold bg-white dark:bg-darkCard text-sage-700 dark:text-beige-200 border border-beige-200 dark:border-darkBorder transition-all">
+                        Keberanian & Tauhid
+                    </button>
+                    <button data-filter="akhlak" class="filter-btn shrink-0 px-4 py-2 rounded-2xl text-xs font-bold bg-white dark:bg-darkCard text-sage-700 dark:text-beige-200 border border-beige-200 dark:border-darkBorder transition-all">
+                        Kasih Sayang & Akhlak
+                    </button>
+                </div>
+
+                <!-- Grid Kartu Kisah Para Nabi -->
+                <div id="prophet-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-6">
+                    <!-- Kartu di-render melalui JavaScript -->
+                </div>
+
+            </section>
+
+            <!-- ================= VIEW 2: PANGGUNG ANIMASI PENDEK INTERAKTIF ================= -->
+            <section id="view-player" class="hidden space-y-5 anim-scene-enter pb-8">
+                
+                <!-- Tombol Kembali & Info Judul -->
+                <div class="flex items-center justify-between">
+                    <button id="btn-back-library" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white dark:bg-darkCard border border-beige-200 dark:border-darkBorder text-xs font-bold text-sage-700 dark:text-beige-200 hover:bg-sage-50 active:scale-95 transition-all">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Daftar Kisah
+                    </button>
+
+                    <div class="flex items-center gap-2">
+                        <!-- Toggle Auto-Play Animasi Cerita -->
+                        <button id="btn-autoplay" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-pastelOrange-100 dark:bg-pastelOrange-500/20 text-pastelOrange-500 dark:text-pastelOrange-300 text-xs font-bold active:scale-95 transition-all">
+                            <i data-lucide="play" id="autoplay-icon" class="w-3.5 h-3.5"></i>
+                            <span id="autoplay-label">Putar Otomatis</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Judul Nabi & Gelar -->
+                <div class="flex items-center justify-between bg-white dark:bg-darkCard p-4 rounded-3xl border border-beige-200 dark:border-darkBorder">
+                    <div>
+                        <span id="player-badge" class="text-[11px] font-bold uppercase tracking-wider text-pastelOrange-500 dark:text-pastelOrange-300">Ulul Azmi</span>
+                        <h2 id="player-title" class="text-lg sm:text-xl font-extrabold text-sage-900 dark:text-beige-50 mt-0.5">Nabi Nuh AS</h2>
+                    </div>
+                    <div class="text-right">
+                        <p id="player-arabic" class="font-arab text-2xl text-sage-600 dark:text-sage-300">نُوحٌ عَلَيْهِ السَّلَامُ</p>
+                    </div>
+                </div>
+
+                <!-- Kartu Info Ringkas Profil Nabi (Kaum, Mukjizat, Dalil) -->
+                <div class="grid grid-cols-3 gap-2.5">
+                    <div class="bg-white dark:bg-darkCard p-3 rounded-2xl border border-beige-200 dark:border-darkBorder">
+                        <span class="text-[10px] font-bold text-sage-400 uppercase block">Kaum / Wilayah</span>
+                        <p id="player-nation" class="text-xs font-extrabold text-sage-800 dark:text-beige-100 mt-0.5 leading-snug">-</p>
+                    </div>
+                    <div class="bg-white dark:bg-darkCard p-3 rounded-2xl border border-beige-200 dark:border-darkBorder">
+                        <span class="text-[10px] font-bold text-sage-400 uppercase block">Mukjizat / Kitab</span>
+                        <p id="player-miracle" class="text-xs font-extrabold text-sage-800 dark:text-beige-100 mt-0.5 leading-snug">-</p>
+                    </div>
+                    <div class="bg-white dark:bg-darkCard p-3 rounded-2xl border border-beige-200 dark:border-darkBorder">
+                        <span class="text-[10px] font-bold text-sage-400 uppercase block">Rujukan Qur'an</span>
+                        <p id="player-quran" class="text-xs font-extrabold text-pastelOrange-500 dark:text-pastelOrange-300 mt-0.5 leading-snug">-</p>
+                    </div>
+                </div>
+
+                <!-- PANGGUNG ANIMASI SVG (Short Animation Stage) -->
+                <div class="relative rounded-4xl overflow-hidden border-2 border-beige-200 dark:border-darkBorder shadow-md bg-gradient-to-b from-sky-100 to-beige-100 dark:from-sage-900 dark:to-darkCard">
+                    
+                    <!-- Progress Bar Babak Cerita di Atas Panggung -->
+                    <div class="absolute top-3 left-4 right-4 z-10 flex gap-1.5" id="scene-progress-bars">
+                        <!-- Bar segmen babak di-render via JS -->
+                    </div>
+
+                    <!-- Nomor Babak & Kontrol Pause Animasi -->
+                    <div class="absolute top-7 left-4 right-4 z-10 flex items-center justify-between">
+                        <span id="scene-counter" class="px-3 py-1 rounded-full bg-black/25 backdrop-blur-xs text-white text-[11px] font-bold">
+                            Babak 1 / 3
+                        </span>
+                        <button id="btn-pause-anim" title="Jeda / Lanjutkan Gerakan Animasi" class="w-8 h-8 rounded-full bg-black/25 backdrop-blur-xs text-white flex items-center justify-center hover:bg-black/40 transition-colors">
+                            <i data-lucide="pause" id="pause-anim-icon" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+
+                    <!-- Kanvas Ilustrasi Animasi SVG -->
+                    <div id="animation-stage" class="w-full h-64 sm:h-72 flex items-center justify-center pt-6">
+                        <!-- Ilustrasi SVG animasi disuntikkan secara dinamis di sini -->
+                    </div>
+
+                    <!-- Navigasi Babak Kiri/Kanan di Bawah Panggung -->
+                    <div class="px-5 py-3 bg-white/80 dark:bg-darkCard/90 backdrop-blur-md border-t border-beige-200/60 dark:border-darkBorder flex items-center justify-between">
+                        <button id="btn-prev-scene" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-beige-100 dark:bg-darkBg text-sage-700 dark:text-beige-200 text-xs font-bold disabled:opacity-40 active:scale-95 transition-all">
+                            <i data-lucide="chevron-left" class="w-4 h-4"></i> Sebelumnya
+                        </button>
+
+                        <span id="scene-title-short" class="text-xs font-extrabold text-sage-800 dark:text-beige-100 text-center px-2">
+                            Judul Babak
+                        </span>
+
+                        <button id="btn-next-scene" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sage-500 text-white text-xs font-bold hover:bg-sage-600 active:scale-95 transition-all">
+                            <span>Selanjutnya</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kartu Narasi Cerita -->
+                <div class="bg-white dark:bg-darkCard rounded-3xl p-5 border border-beige-200 dark:border-darkBorder space-y-3 shadow-xs">
+                    <div class="flex items-center gap-2 text-sage-600 dark:text-sage-300">
+                        <i data-lucide="book-open" class="w-4 h-4"></i>
+                        <h3 class="font-extrabold text-sm">Kisah Perjalanan</h3>
+                    </div>
+                    <p id="scene-narrative" class="text-sm text-sage-800 dark:text-beige-100 leading-relaxed">
+                        Narasi cerita akan tampil di sini...
+                    </p>
+                </div>
+
+                <!-- Kartu Jejak Keteladanan & Praktik Harian -->
+                <div class="bg-pastelOrange-50 dark:bg-pastelOrange-500/10 rounded-3xl p-5 border border-pastelOrange-200 dark:border-pastelOrange-500/30 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-pastelOrange-500 dark:text-pastelOrange-300">
+                            <i data-lucide="heart-handshake" class="w-4 h-4"></i>
+                            <h3 class="font-extrabold text-sm">Jejak Keteladanan untuk Kita</h3>
+                        </div>
+                        <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-pastelOrange-200/60 dark:bg-pastelOrange-500/20 text-pastelOrange-600 dark:text-pastelOrange-200">
+                            Hikmah Utama
+                        </span>
+                    </div>
+                    <p id="player-lesson" class="text-xs sm:text-sm font-medium text-sage-900 dark:text-beige-100 leading-relaxed">
+                        Pelajaran keteladanan...
+                    </p>
+
+                    <!-- Langkah Aksi Nyata Sehari-hari -->
+                    <div class="bg-white/80 dark:bg-darkCard/80 rounded-2xl p-3.5 border border-pastelOrange-200/70 dark:border-pastelOrange-500/20 space-y-1.5">
+                        <div class="flex items-center gap-1.5 text-sage-700 dark:text-sage-300">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pastelOrange-500"></i>
+                            <span class="text-[11px] font-extrabold uppercase tracking-wide">Amalan & Aksi Nyata Hari Ini</span>
+                        </div>
+                        <p id="player-action" class="text-xs text-sage-700 dark:text-beige-200 leading-relaxed">
+                            Langkah praktik...
+                        </p>
+                    </div>
+
+                    <!-- Tombol Tandai Telah Dipelajari -->
+                    <div class="pt-2">
+                        <button id="btn-mark-learned" class="w-full py-3 rounded-2xl bg-sage-500 hover:bg-sage-600 text-white text-xs sm:text-sm font-bold shadow-sm flex items-center justify-center gap-2 active:scale-98 transition-all">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                            <span>Tandai Kisah Selesai Dipelajari</span>
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- Toast Notifikasi Ringan -->
+        <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-sage-800 dark:bg-beige-100 text-white dark:text-sage-900 px-4 py-2.5 rounded-full text-xs font-bold shadow-xl opacity-0 pointer-events-none transition-all duration-300 z-50 flex items-center gap-2">
+            <span id="toast-icon">🌟</span>
+            <span id="toast-msg">Alhamdulillah, hikmah tercatat!</span>
+        </div>
+
+    </div>
+
+    <!-- ================= DATA KISAH NABI & LOGIKA ANIMASI ================= -->
+    <script>
+        // Inisialisasi Lucide Icons
+        lucide.createIcons();
+
+        // ---------------------------------------------------------
+        // 1. DATABASE TERINCI LENGKAP 25 NABI & RASUL (3 Babak Animasi + Profil & Aksi)
+        // ---------------------------------------------------------
+        const PROPHETS_DATA = [
+            {
+                id: 'adam',
+                order: 1,
+                name: 'Nabi Adam AS',
+                arabic: 'آدَمُ عَلَيْهِ السَّلَامُ',
+                title: 'Manusia Pertama & Taubat yang Tulus',
+                category: 'kesabaran',
+                badge: 'Abul Basyar',
+                nation: 'Umat Manusia Pertama',
+                miracle: 'Diajarkan Nama Benda',
+                quran: 'QS. Al-Baqarah: 30-37',
+                emoji: '🌱',
+                summary: 'Manusia pertama yang diciptakan Allah dan dimuliakan di surga, lalu mengajarkan ketulusan bertaubat saat tergelincir dalam khilaf.',
+                lesson: 'Setiap manusia bisa berbuat salah, namun sebaik-baik orang yang bersalah adalah yang segera mengakui kekhilafan tanpa menyalahkan pihak lain dan memohon ampun kepada Allah.',
+                action: 'Biasakan segera beristighfar dan meminta maaf secara tulus setiap kali menyadari kekeliruan kecil kepada Allah maupun sesama.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Penciptaan & Kemuliaan Ilmu',
+                        narrative: 'Allah menciptakan Nabi Adam AS dari saripati tanah dengan bentuk yang paling sempurna, meniupkan ruh kepadanya, dan mengajarkannya nama-nama segala sesuatu di alam semesta sehingga para malaikat bersujud memberi penghormatan.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="85" r="55" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="85" r="28" fill="#5E8264"/><circle cx="160" cy="85" r="14" fill="#FFD6BA"/></g><path d="M0 160 Q160 135 320 160 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Ujian di Surga & Godaan Iblis',
+                        narrative: 'Nabi Adam AS dan Siti Hawa tinggal di surga yang penuh kenikmatan dan hanya dilarang mendekati satu pohon. Karena tipu daya bisikan Iblis yang bersumpah palsu, keduanya tergelincir memakan buah tersebut hingga diturunkan ke bumi.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="50" r="24" fill="#FFB88A" class="anim-glow"/><g class="anim-float"><rect x="154" y="95" width="12" height="60" rx="4" fill="#8C5828"/><circle cx="160" cy="80" r="32" fill="#5E8264"/><circle cx="145" cy="75" r="5" fill="#F57C36"/><circle cx="174" cy="85" r="5" fill="#F57C36"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#7C9E82"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Doa Taubat & Awal Kehidupan di Bumi',
+                        narrative: 'Nabi Adam AS dan Siti Hawa menyesal sedalam-dalamnya lalu berdoa: "Rabbana zhalamna anfusana wa in lam taghfir lana wa tarhamna lanakunanna minal khasirin." Allah menerima taubat mereka dan membimbing anak cucunya memakmurkan bumi.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="45" r="24" fill="#FFD6BA" class="anim-glow"/><path d="M0 155 Q90 130 180 155 T320 145 L320 200 L0 200 Z" fill="#7C9E82"/><g class="anim-float"><path d="M160 150 L160 115" stroke="#5E8264" stroke-width="4" stroke-linecap="round"/><circle cx="150" cy="120" r="10" fill="#A1BCA5"/><circle cx="170" cy="115" r="12" fill="#5E8264"/></g></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'idris',
+                order: 2,
+                name: 'Nabi Idris AS',
+                arabic: 'إِدْرِيسُ عَلَيْهِ السَّلَامُ',
+                title: 'Kecintaan pada Ilmu & Ketekunan',
+                category: 'akhlak',
+                badge: 'Nabi ke-2',
+                nation: 'Keturunan Qabil & Syits',
+                miracle: 'Manusia Pertama Menulis',
+                quran: 'QS. Maryam: 56-57',
+                emoji: '📜',
+                summary: 'Nabi pertama yang pandai menulis dengan pena, menjahit pakaian, serta tekun mempelajari ilmu perbintangan dan beribadah.',
+                lesson: 'Menuntut ilmu dan bekerja dengan keterampilan yang bermanfaat adalah bagian dari ibadah yang mengangkat derajat manusia di sisi Allah.',
+                action: 'Luangkan waktu minimal 15 menit hari ini untuk membaca ilmu yang bermanfaat dan kerjakan tugasmu dengan rapi serta teliti.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Pena Pertama & Kecintaan Belajar',
+                        narrative: 'Nabi Idris AS mewarisi 30 shuhuf (lembaran wahyu) dan menjadi manusia pertama yang menulis menggunakan pena, menghitung ilmu falak, serta merancang pakaian berjahit agar manusia berpakaian lebih pantas.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="52" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><rect x="115" y="65" width="90" height="65" rx="10" fill="#FFF8F3" stroke="#5E8264" stroke-width="3"/><line x1="130" y1="85" x2="190" y2="85" stroke="#A1BCA5" stroke-width="3" stroke-linecap="round"/><line x1="130" y1="100" x2="180" y2="100" stroke="#A1BCA5" stroke-width="3" stroke-linecap="round"/><path d="M175 115 L205 70 L212 75 L182 120 Z" fill="#F57C36"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Nasihat Hikmah bagi Masyarakat',
+                        narrative: 'Dengan kelembutan dan kecerdasannya, Nabi Idris AS mengajak manusia untuk mensyukuri nikmat Allah, menjaga salat, berpuasa, dan tidak iri hati terhadap rezeki orang lain.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="85" r="45" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><circle cx="130" cy="105" r="14" fill="#7C9E82"/><circle cx="160" cy="95" r="18" fill="#5E8264"/><circle cx="190" cy="105" r="14" fill="#7C9E82"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Diangkat ke Martabat yang Tinggi',
+                        narrative: 'Allah memuji Nabi Idris AS dalam Al-Qur\'an sebagai sosok yang sangat mencintai kebenaran (Shiddiq) dan mengangkatnya ke kedudukan serta tempat yang tinggi penuh cahaya.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="60" r="35" fill="#FFD6BA" class="anim-glow"/><circle cx="110" cy="70" r="3" fill="#F57C36" class="anim-float"/><circle cx="210" cy="65" r="4" fill="#F57C36" class="anim-float"/><path d="M80 165 Q160 110 240 165" fill="none" stroke="#5E8264" stroke-width="4" stroke-dasharray="6 6"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'nuh',
+                order: 3,
+                name: 'Nabi Nuh AS',
+                arabic: 'نُوحٌ عَلَيْهِ السَّلَامُ',
+                title: 'Kesabaran Tanpa Batas & Ketaatan',
+                category: 'kesabaran',
+                badge: 'Ulul Azmi',
+                nation: 'Kaum Bani Rasib',
+                miracle: 'Bahtera Besar & Banjir Bandang',
+                quran: 'QS. Nuh: 1-28 & Hud: 36-48',
+                emoji: '🚢',
+                summary: 'Berdakwah selama 950 tahun dengan penuh kesabaran dan membangun bahtera di atas bukit demi menaati perintah Allah.',
+                lesson: 'Jangan pernah lelah berbuat kebaikan dan menyampaikan kebenaran meski sedikit yang mendukung. Ketaatan kepada Allah selalu berujung pada keselamatan.',
+                action: 'Tetaplah konsisten menjaga satu kebiasaan baik harianmu meskipun terasa berat atau belum mendapat apresiasi dari orang sekitar.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Dakwah 950 Tahun Penuh Kesabaran',
+                        narrative: 'Selama 950 tahun, Nabi Nuh AS menyeru kaumnya menyembah Allah Yang Esa secara sembunyi maupun terang-terangan. Meski kaumnya menutup telinga dan mencemooh, beliau tetap mendoakan dan menasihati dengan sabar.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="55" r="32" fill="#FFD6BA" class="anim-glow"/><circle cx="160" cy="55" r="20" fill="#FF9859" opacity="0.8"/><path d="M0 160 Q90 120 180 155 T320 145 L320 200 L0 200 Z" fill="#A1BCA5"/><path d="M0 175 Q140 140 320 170 L320 200 L0 200 Z" fill="#5E8264"/><g class="anim-float"><rect x="148" y="95" width="24" height="34" rx="8" fill="#FFF8F3" stroke="#5E8264" stroke-width="3"/><circle cx="160" cy="112" r="6" fill="#F57C36" class="anim-glow"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Membangun Bahtera di Atas Bukit',
+                        narrative: 'Atas wahyu Allah, Nabi Nuh AS menanam pohon dan membangun bahtera kayu raksasa di daerah yang jauh dari laut. Beliau bekerja dengan penuh keyakinan tanpa goyah oleh ejekan kaumnya.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><g class="anim-float"><circle cx="80" cy="45" r="16" fill="#FFFFFF" opacity="0.85"/><circle cx="96" cy="42" r="20" fill="#FFFFFF" opacity="0.85"/></g><path d="M20 175 Q160 125 300 175 Z" fill="#7C9E82"/><g class="anim-wave"><path d="M85 125 L235 125 L210 160 L110 160 Z" fill="#B47B48"/><rect x="125" y="102" width="70" height="23" rx="6" fill="#D99B66"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Berlayar Menuju Keselamatan',
+                        narrative: 'Ketika air bah memancar dari bumi dan turun dari langit, bahtera Nabi Nuh membawa orang-orang beriman dan sepasang makhluk hidup berlayar dengan aman hingga berlabuh damai di Bukit Judi.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><path d="M60 140 A 100 100 0 0 1 260 140" fill="none" stroke="#FFB88A" stroke-width="6" opacity="0.6"/><g class="anim-wave"><path d="M95 115 L225 115 L205 145 L115 145 Z" fill="#9C6635"/><rect x="130" y="95" width="60" height="20" rx="5" fill="#C98A53"/></g><path d="M0 142 Q40 132 80 142 T160 142 T240 142 T320 142 L320 200 L0 200 Z" fill="#5B9BD5" opacity="0.85"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'hud',
+                order: 4,
+                name: 'Nabi Hud AS',
+                arabic: 'هُودٌ عَلَيْهِ السَّلَامُ',
+                title: 'Kerendahan Hati di Tengah Kejayaan',
+                category: 'keberanian',
+                badge: 'Nabi ke-4',
+                nation: 'Kaum \'Ad (Al-Ahqaf)',
+                miracle: 'Selamat dari Badai Angin',
+                quran: 'QS. Hud: 50-60 & Al-Ahqaf: 21',
+                emoji: '🌪️',
+                summary: 'Diutus kepada kaum \'Ad yang bertubuh kuat dan membangun istana megah, namun menjadi sombong dan melupakan Allah.',
+                lesson: 'Kekuatan fisik, harta, dan kemegahan tidak akan menyelamatkan seseorang bila disertai kesombongan kepada Pencipta.',
+                action: 'Ucapkan Alhamdulillah setiap kali melihat pencapaianmu dan hindari sikap meremehkan orang lain.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Kejayaan Kaum \'Ad di Negeri Al-Ahqaf',
+                        narrative: 'Kaum \'Ad dianugerahi tubuh kekar, kebun-kebun subur, dan kemampuan membangun gedung tinggi menjulang. Sayangnya, kemakmuran itu membuat mereka lupa diri dan menyembah berhala.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><rect x="75" y="75" width="35" height="85" rx="4" fill="#D9C3A3"/><rect x="142" y="60" width="36" height="100" rx="4" fill="#C7D7C9"/><rect x="210" y="80" width="35" height="80" rx="4" fill="#D9C3A3"/><path d="M0 160 L320 160 L320 200 L0 200 Z" fill="#7C9E82"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Seruan Nabi Hud untuk Bersyukur',
+                        narrative: 'Nabi Hud AS dengan berani mengingatkan saudaranya sesama kaum \'Ad agar memohon ampun kepada Allah yang telah melimpahkan rezeki, namun mereka menantang datangnya azab.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="80" r="45" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="85" r="24" fill="#5E8264"/><path d="M160 68 L160 92 M160 100 L160 102" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Badai Angin & Rahmat bagi yang Beriman',
+                        narrative: 'Allah mengirimkan angin topan dingin yang sangat kencang selama tujuh malam delapan hari menghancurkan keangkuhan kaum \'Ad, sementara Nabi Hud AS dan pengikutnya diselamatkan dengan rahmat-Nya.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><g class="anim-wave"><path d="M90 65 Q160 50 230 65" fill="none" stroke="#A1BCA5" stroke-width="5" stroke-linecap="round"/><path d="M105 90 Q160 78 215 90" fill="none" stroke="#7C9E82" stroke-width="5" stroke-linecap="round"/></g><circle cx="160" cy="148" r="18" fill="#FFD6BA" class="anim-glow"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'shaleh',
+                order: 5,
+                name: 'Nabi Shaleh AS',
+                arabic: 'صَالِحٌ عَلَيْهِ السَّلَامُ',
+                title: 'Amanah Menjaga Tanda Kebesaran Allah',
+                category: 'keberanian',
+                badge: 'Nabi ke-5',
+                nation: 'Kaum Tsamud (Al-Hijr)',
+                miracle: 'Unta Betina dari Batu Karang',
+                quran: 'QS. Hud: 61-68 & Asy-Syu\'ara: 141',
+                emoji: '🐪',
+                summary: 'Diutus kepada kaum Tsamud yang memahat gunung batu, dengan mukjizat unta betina yang keluar dari batu karang.',
+                lesson: 'Jangan pernah melanggar batas larangan Allah dan merusak amanah yang telah dititipkan demi hawa nafsu sesaat.',
+                action: 'Jaga lingkungan dan fasilitas umum di sekitarmu sebagai wujud menjaga amanah Allah di muka bumi.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Keahlian Kaum Tsamud Memahat Gunung',
+                        narrative: 'Kaum Tsamud mewarisi kejayaan setelah kaum \'Ad. Mereka sangat terampil memahat bukit-bukit batu menjadi rumah megah, namun hati mereka mengeras menolak tauhid.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><polygon points="40,165 110,60 180,165" fill="#A1BCA5"/><polygon points="150,165 225,75 300,165" fill="#7C9E82"/><rect x="95" y="125" width="24" height="40" rx="4" fill="#3B533F"/><path d="M0 165 L320 165 L320 200 L0 200 Z" fill="#E8DAC3"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Mukjizat Unta Betina dari Batu Karang',
+                        narrative: 'Atas permintaan kaumnya yang menantang bukti kenabian, Nabi Shaleh AS berdoa hingga terbelah batu karang dan keluarlah unta betina besar yang berbagi giliran air minum dengan penduduk.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="50" fill="#FFD6BA" opacity="0.7" class="anim-glow"/><g class="anim-float"><rect x="135" y="95" width="44" height="26" rx="12" fill="#B47B48"/><circle cx="184" cy="88" r="9" fill="#B47B48"/><rect x="142" y="118" width="6" height="22" fill="#9C6635"/><rect x="166" y="118" width="6" height="22" fill="#9C6635"/></g><path d="M0 165 L320 165 L320 200 L0 200 Z" fill="#E8DAC3"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Peringatan yang Diabaikan & Keselamatan',
+                        narrative: 'Sebagian pemuka kaum Tsamud melanggar janji dan menyembelih unta Allah tersebut. Tiga hari kemudian datang suara gemuruh yang membinasakan mereka, sementara Nabi Shaleh AS dan orang beriman diselamatkan.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="85" r="45" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="85" r="22" fill="#5E8264"/><path d="M150 85 L157 92 L172 77" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'ibrahim',
+                order: 6,
+                name: 'Nabi Ibrahim AS',
+                arabic: 'إِبْرَاهِيمُ عَلَيْهِ السَّلَامُ',
+                title: 'Pencari Kebenaran & Tawakal Sejati',
+                category: 'keberanian',
+                badge: 'Khalilullah',
+                nation: 'Babilonia & Raja Namrud',
+                miracle: 'Api Menjadi Dingin',
+                quran: 'QS. Al-Anbiya: 51-71 & Al-Baqarah: 127',
+                emoji: '🔥',
+                summary: 'Keberanian menegakkan tauhid di hadapan penguasa zalim hingga mukjizat api yang berubah menjadi dingin dan menyelamatkan.',
+                lesson: 'Ketika kita menolong agama Allah dengan keberanian dan ketulusan, Allah akan menghadirkan pertolongan dari arah yang tidak pernah diduga.',
+                action: 'Gunakan akal sehat untuk merenungi ciptaan Allah hari ini dan bertawakallah saat menghadapi situasi yang terasa sulit.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Pencarian Tuhan dengan Akal Jernih',
+                        narrative: 'Sejak muda di negeri Babilonia, Nabi Ibrahim AS mengamati bintang, bulan, dan matahari yang semuanya terbenam. Beliau pun yakin bahwa Pencipta seluruh alam adalah Allah Yang Maha Kekal.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><rect x="20" y="15" width="280" height="165" rx="24" fill="#29382C"/><g class="anim-float"><path d="M165 45 A 25 25 0 1 0 190 78 A 20 20 0 1 1 165 45 Z" fill="#FFD6BA"/><circle cx="110" cy="55" r="3" fill="#FFF8F3" class="anim-glow"/><circle cx="225" cy="50" r="3.5" fill="#FFF8F3" class="anim-glow"/></g><path d="M20 150 Q160 115 300 150 L300 180 L20 180 Z" fill="#3B533F"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Mukjizat Api Raja Namrud yang Dingin',
+                        narrative: 'Saat dilemparkan ke dalam kobaran api raksasa karena menghancurkan berhala, Nabi Ibrahim berucap: "Hasbunallah wa ni\'mal wakil". Allah memerintahkan api menjadi dingin dan menyelamatkan beliau.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="115" r="52" fill="#E3EBE4" opacity="0.6" class="anim-glow"/><g class="anim-fire"><path d="M125 160 Q115 110 145 85 Q140 115 160 70 Q180 115 175 85 Q205 110 195 160 Z" fill="#FF9859"/><path d="M138 160 Q135 125 160 95 Q185 125 182 160 Z" fill="#FFD6BA"/></g><ellipse cx="160" cy="162" rx="55" ry="12" fill="#5E8264"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Membangun Ka\'bah Bersama Ismail',
+                        narrative: 'Dengan penuh kerendahan hati dan doa agar lahir generasi muslim yang taat, Nabi Ibrahim AS bersama putranya Nabi Ismail AS meninggikan fondasi Ka\'bah sebagai pusat tauhid umat manusia.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="40" r="24" fill="#FFEDE0" class="anim-glow"/><path d="M0 160 Q160 145 320 160 L320 200 L0 200 Z" fill="#E8DAC3"/><g class="anim-float"><rect x="125" y="75" width="70" height="75" rx="6" fill="#29382C"/><rect x="125" y="92" width="70" height="8" fill="#F57C36"/><rect x="152" y="112" width="16" height="24" rx="2" fill="#D9C3A3"/></g></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'luth',
+                order: 7,
+                name: 'Nabi Luth AS',
+                arabic: 'لُوطٌ عَلَيْهِ السَّلَامُ',
+                title: 'Keteguhan Menjaga Kesucian Moral',
+                category: 'keberanian',
+                badge: 'Nabi ke-7',
+                nation: 'Penduduk Negeri Sodom',
+                miracle: 'Diselamatkan Malaikat',
+                quran: 'QS. Hud: 77-83 & Asy-Syu\'ara: 160',
+                emoji: '🌄',
+                summary: 'Berani menentang kerusakan moral di negeri Sodom dan mengajak kaumnya kembali kepada fitrah yang suci.',
+                lesson: 'Tetaplah teguh memegang prinsip kebenaran dan menjaga kehormatan diri meskipun berada di lingkungan yang menyimpang.',
+                action: 'Jaga pergaulan dan batasan diri dengan prinsip yang sehat serta berani berkata tidak pada hal yang merusak moral.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Dakwah di Tengah Rusaknya Moral Sodom',
+                        narrative: 'Nabi Luth AS diutus ke negeri Sodom yang penduduknya menyimpang dari fitrah manusia dan gemar merampok musafir. Dengan tegas beliau menyeru mereka bertakwa kepada Allah.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="65" r="35" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><path d="M160 45 L188 60 L188 92 C188 112 160 125 160 125 C160 125 132 112 132 92 L132 60 Z" fill="#5E8264"/><path d="M150 85 L157 92 L172 77" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/></g><path d="M0 155 Q160 135 320 155 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Kedatangan Tamu Malaikat',
+                        narrative: 'Para malaikat datang bertamu ke rumah Nabi Luth AS dengan rupa pemuda tampan. Nabi Luth berusaha sekuat tenaga melindungi tamu-tamunya dari gangguan kaumnya yang zalim.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="85" r="48" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><rect x="125" y="75" width="70" height="65" rx="10" fill="#FFF8F3" stroke="#5E8264" stroke-width="3"/><polygon points="118,75 160,48 202,75" fill="#5E8264"/></g><path d="M0 155 L320 155 L320 200 L0 200 Z" fill="#7C9E82"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Perjalanan Malam Menuju Keselamatan',
+                        narrative: 'Para malaikat memerintahkan Nabi Luth AS dan keluarganya yang beriman berjalan keluar kota pada akhir malam tanpa menoleh ke belakang sebelum negeri itu dijungkirbalikkan oleh azab Allah.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><rect x="20" y="15" width="280" height="165" rx="24" fill="#29382C"/><circle cx="220" cy="55" r="18" fill="#FFD6BA" class="anim-glow"/><path d="M20 150 Q160 120 300 150 L300 180 L20 180 Z" fill="#5E8264"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'ismail',
+                order: 8,
+                name: 'Nabi Ismail AS',
+                arabic: 'إِسْمَاعِيلُ عَلَيْهِ السَّلَامُ',
+                title: 'Keikhlasan Bakti kepada Orang Tua & Allah',
+                category: 'kesabaran',
+                badge: 'Nabi ke-8',
+                nation: 'Kabilah Jurhum (Makkah)',
+                miracle: 'Mata Air Zamzam',
+                quran: 'QS. Ash-Shaffat: 102-107 & Maryam: 54',
+                emoji: '💧',
+                summary: 'Putra Nabi Ibrahim AS yang ikhlas menerima perintah pengorbanan serta menjadi sebab memancarnya mata air Zamzam.',
+                lesson: 'Ketaatan seorang anak kepada perintah Allah dan bakti yang tulus kepada orang tua akan mendatangkan keberkahan abadi.',
+                action: 'Lakukan satu kebaikan atau bantu pekerjaan orang tuamu hari ini dengan wajah ceria tanpa mengeluh.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Memancarnya Mata Air Zamzam',
+                        narrative: 'Di lembah Makkah yang tandus, Siti Hajar berlari penuh tawakal antara Bukit Shafa dan Marwah mencari air. Atas kuasa Allah, memancarlah mata air Zamzam yang jernih di dekat kaki Nabi Ismail kecil.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><path d="M0 150 Q160 135 320 150 L320 200 L0 200 Z" fill="#E8DAC3"/><g class="anim-float"><path d="M160 145 Q140 100 120 115" fill="none" stroke="#5B9BD5" stroke-width="5" stroke-linecap="round"/><path d="M160 145 Q180 100 200 115" fill="none" stroke="#5B9BD5" stroke-width="5" stroke-linecap="round"/><path d="M160 145 L160 90" fill="none" stroke="#7AB3D9" stroke-width="6" stroke-linecap="round"/></g><ellipse cx="160" cy="152" rx="45" ry="10" fill="#5B9BD5" opacity="0.85"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Ujian Pengorbanan Penuh Keikhlasan',
+                        narrative: 'Ketika beranjak remaja, Nabi Ibrahim AS menyampaikan mimpi perintah penyembelihan. Nabi Ismail AS menjawab teguh: "Wahai ayahku, kerjakanlah apa yang diperintahkan kepadamu; insyaAllah engkau mendapatiku termasuk orang yang sabar."',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="50" fill="#FFD6BA" opacity="0.7" class="anim-glow"/><g class="anim-float"><path d="M160 125 C160 125 125 102 125 82 C125 70 135 62 146 62 C153 62 158 66 160 70 C162 66 167 62 174 62 C185 62 195 70 195 82 C195 102 160 125 160 125 Z" fill="#5E8264"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Diganti Sembelihan Besar & Tumbuhnya Makkah',
+                        narrative: 'Setelah keduanya membuktikan kepasrahan total, Allah mengganti Nabi Ismail AS dengan seekor domba sembelihan yang besar (awal syariat Kurban) dan menjadikan Makkah negeri yang makmur.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="65" r="30" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="100" r="26" fill="#5E8264"/><path d="M148 100 L156 108 L174 90" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'ishaq',
+                order: 9,
+                name: 'Nabi Ishaq AS',
+                arabic: 'إِسْحَاقُ عَلَيْهِ السَّلَامُ',
+                title: 'Kabar Gembira & Keturunan Penuh Berkah',
+                category: 'akhlak',
+                badge: 'Nabi ke-9',
+                nation: 'Kan\'an (Palestina)',
+                miracle: 'Lahir di Usia Senja Orang Tua',
+                quran: 'QS. Hud: 71-73 & Ash-Shaffat: 112',
+                emoji: '🌿',
+                summary: 'Putra kedua Nabi Ibrahim AS yang kelahirannya menjadi kabar gembira dari para malaikat dan menurunkan para nabi Bani Israil.',
+                lesson: 'Doa yang dipanjatkan dengan penuh kesabaran oleh orang-orang saleh pasti akan dikabulkan Allah pada waktu terbaik-Nya.',
+                action: 'Jangan pernah merasa doa kita terlalu lama dikabulkan; teruslah berprasangka baik kepada rencana Allah.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Kabar Gembira dari Para Malaikat',
+                        narrative: 'Para malaikat yang bertamu ke kediaman Nabi Ibrahim AS menyampaikan kabar gembira kepada Siti Sarah bahwa ia akan melahirkan seorang putra bernama Ishaq, disusul cucu bernama Ya\'qub.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="60" r="28" fill="#FFD6BA" class="anim-glow"/><g class="anim-float"><path d="M160 155 L160 95" stroke="#5E8264" stroke-width="5" stroke-linecap="round"/><ellipse cx="142" cy="115" rx="16" ry="8" transform="rotate(-25 142 115)" fill="#7C9E82"/><ellipse cx="178" cy="105" rx="16" ry="8" transform="rotate(25 178 105)" fill="#5E8264"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Tumbuh dalam Lingkungan Kenabian',
+                        narrative: 'Nabi Ishaq AS tumbuh di tanah Kan\'an dengan ilmu agama yang luas, akhlak yang santun, serta ketaatan penuh meneruskan dakwah ayahnya, Nabi Ibrahim AS.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="50" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="95" r="26" fill="#5E8264"/><circle cx="160" cy="95" r="10" fill="#FFD6BA"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Pohon Silsilah Para Nabi',
+                        narrative: 'Allah memberkahi keturunan Nabi Ishaq AS hingga dari garis keturunannya lahirlah banyak nabi dan rasul yang membimbing Bani Israil menuju jalan kebenaran.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><path d="M160 160 L160 75" stroke="#5E8264" stroke-width="6" stroke-linecap="round"/><circle cx="160" cy="65" r="18" fill="#F57C36" class="anim-glow"/><circle cx="120" cy="95" r="14" fill="#7C9E82" class="anim-float"/><circle cx="200" cy="95" r="14" fill="#7C9E82" class="anim-float"/><path d="M0 160 L320 160 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'yaqub',
+                order: 10,
+                name: 'Nabi Ya\'qub AS',
+                arabic: 'يَعْقُوبُ عَلَيْهِ السَّلَامُ',
+                title: 'Kesabaran Indah & Prasangka Baik',
+                category: 'kesabaran',
+                badge: 'Israil',
+                nation: 'Kan\'an (12 Suku Bani Israil)',
+                miracle: 'Firasat Kenabian & Kesembuhan Mata',
+                quran: 'QS. Yusuf: 83-96 & Al-Baqarah: 132',
+                emoji: '🤲',
+                summary: 'Ayah dari Nabi Yusuf AS yang selalu berprasangka baik kepada Allah meski berpisah puluhan tahun dengan putra tercintanya.',
+                lesson: 'Jangan pernah berputus asa dari rahmat Allah; adukan segala kesedihan hanya kepada-Nya dengan kesabaran yang indah (Shabrun Jamil).',
+                action: 'Saat hatimu sedih atau cemas hari ini, curahkan semuanya dalam doa setelah salat tanpa mengeluh berlebihan kepada manusia.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Firasat Mimpi Nabi Yusuf Kecil',
+                        narrative: 'Ketika Nabi Yusuf kecil menceritakan mimpinya melihat sebelas bintang, matahari, dan bulan bersujud kepadanya, Nabi Ya\'qub AS dengan bijak menasihati agar mimpi itu dijaga dari rasa iri saudara-saudaranya.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><rect x="20" y="15" width="280" height="165" rx="24" fill="#29382C"/><circle cx="160" cy="70" r="20" fill="#FFD6BA" class="anim-glow"/><circle cx="115" cy="60" r="4" fill="#FFF8F3" class="anim-float"/><circle cx="205" cy="60" r="4" fill="#FFF8F3" class="anim-float"/><circle cx="160" cy="115" r="5" fill="#F57C36" class="anim-float"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Shabrun Jamil (Kesabaran yang Indah)',
+                        narrative: 'Saat kehilangan Nabi Yusuf AS dan kemudian Bunyamin, Nabi Ya\'qub AS tetap teguh berucap: "Sesungguhnya hanyalah kepada Allah aku mengadukan kesusahan dan kesedihanku, dan aku mengetahui dari Allah apa yang tidak kamu ketahui."',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="85" r="48" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><path d="M135 110 Q145 90 158 105 L158 125 L135 125 Z" fill="#5E8264"/><path d="M185 110 Q175 90 162 105 L162 125 L185 125 Z" fill="#5E8264"/><circle cx="160" cy="75" r="8" fill="#F57C36" class="anim-glow"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Pertemuan Penuh Haru & Pulihnya Penglihatan',
+                        narrative: 'Berkat keyakinan bahwa rahmat Allah selalu dekat, penglihatan Nabi Ya\'qub AS kembali pulih saat baju Nabi Yusuf diusapkan ke wajahnya, dan seluruh keluarga berkumpul kembali dalam ampunan.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="52" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><circle cx="145" cy="95" r="20" fill="#5E8264"/><circle cx="175" cy="95" r="20" fill="#F57C36" opacity="0.85"/></g></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'yusuf',
+                order: 11,
+                name: 'Nabi Yusuf AS',
+                arabic: 'يُوسُفُ عَلَيْهِ السَّلَامُ',
+                title: 'Menjaga Kehormatan & Kelapangan Hati Memaafkan',
+                category: 'akhlak',
+                badge: 'Al-Karim',
+                nation: 'Penduduk Negeri Mesir',
+                miracle: 'Menafsirkan Mimpi & Ketampanan',
+                quran: 'QS. Yusuf: 1-111',
+                emoji: '🌾',
+                summary: 'Diuji dari dasar sumur, fitnah penjara, hingga menjadi bendahara negeri Mesir dan memaafkan saudara-saudaranya dengan lapang.',
+                lesson: 'Ketakwaan dan kesabaran menjaga kehormatan diri akan mengangkat derajat seseorang dari ujian tergelap menuju kemuliaan.',
+                action: 'Maafkan kesalahan satu orang yang pernah mengecewakanmu hari ini agar hatimu terasa lebih ringan dan lapang.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Ujian Sumur Gelap & Keteguhan Iman',
+                        narrative: 'Dibuang ke dasar sumur oleh saudara-saudaranya lalu dijual sebagai budak di Mesir, Nabi Yusuf AS tetap menjaga kejujuran dan menolak godaan maksiat hingga rela dipenjara demi menjaga kehormatannya.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="50" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><polygon points="160,55 195,95 160,135 125,95" fill="#5E8264"/><circle cx="160" cy="95" r="12" fill="#FFD6BA"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Menafsirkan Mimpi Raja & Mengatasi Paceklik',
+                        narrative: 'Atas ilmu takwil mimpi dari Allah, Nabi Yusuf AS menafsirkan mimpi Raja Mesir tentang tujuh tahun masa subur dan tujuh tahun paceklik, sehingga beliau dipercaya mengelola lumbung pangan negeri.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><path d="M0 160 Q160 145 320 160 L320 200 L0 200 Z" fill="#E8DAC3"/><g class="anim-wave"><path d="M130 155 Q125 110 115 85" fill="none" stroke="#F57C36" stroke-width="4" stroke-linecap="round"/><path d="M160 155 L160 75" fill="none" stroke="#F57C36" stroke-width="5" stroke-linecap="round"/><path d="M190 155 Q195 110 205 85" fill="none" stroke="#F57C36" stroke-width="4" stroke-linecap="round"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Memaafkan Tanpa Menyisakan Dendam',
+                        narrative: 'Saat saudara-saudaranya datang meminta bantuan pangan dan menyadari kesalahan mereka, Nabi Yusuf AS berkata lembut: "Pada hari ini tidak ada cercaan terhadap kamu, mudah-mudahan Allah mengampuni kamu."',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="48" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><path d="M160 120 C160 120 130 98 130 80 C130 70 139 62 148 62 C154 62 158 66 160 70 C162 66 166 62 172 62 C181 62 190 70 190 80 C190 98 160 120 160 120 Z" fill="#5E8264"/></g></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'ayyub',
+                order: 12,
+                name: 'Nabi Ayyub AS',
+                arabic: 'أَيُّوبُ عَلَيْهِ السَّلَامُ',
+                title: 'Puncak Kesabaran dalam Ujian Penyakit',
+                category: 'kesabaran',
+                badge: 'Teladan Sabar',
+                nation: 'Negeri Hauran (Syam)',
+                miracle: 'Mata Air Penyembuh Penyakit',
+                quran: 'QS. Al-Anbiya: 83-84 & Shad: 41-44',
+                emoji: '💦',
+                summary: 'Tetap bersyukur dan berdzikir meski kehilangan harta, anak, dan diuji penyakit bertahun-tahun hingga Allah menyembuhkannya.',
+                lesson: 'Lisan yang selalu basah dengan dzikir dan syukur membuat hati tetap tenang dalam kondisi sehat maupun sakit.',
+                action: 'Syukuri nikmat kesehatan hari ini dan jenguk atau doakan kerabat yang sedang sakit.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Kedermawanan di Masa Kelapangan',
+                        narrative: 'Awalnya Nabi Ayyub AS dianugerahi kekayaan melimpah, ternak yang banyak, dan keluarga besar. Semua itu tidak membuatnya lalai; beliau selalu menyantuni anak yatim, fakir miskin, dan memuliakan tamu.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="60" r="28" fill="#FFD6BA" class="anim-glow"/><path d="M0 155 Q160 135 320 155 L320 200 L0 200 Z" fill="#7C9E82"/><circle cx="130" cy="135" r="14" fill="#5E8264" class="anim-float"/><circle cx="190" cy="135" r="14" fill="#5E8264" class="anim-float"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Ujian Berat & Doa yang Santun',
+                        narrative: 'Ketika Allah mengujinya dengan hilangnya harta, wafatnya anak-anak, dan penyakit kulit bertahun-tahun, Nabi Ayyub AS tetap setia didampingi istrinya Rahmah dan berdoa santun: "Ya Tuhanku, sesungguhnya aku telah ditimpa penyakit dan Engkau adalah Tuhan Yang Maha Penyayang."',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="48" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="95" r="24" fill="#5E8264"/><circle cx="160" cy="95" r="8" fill="#F57C36" class="anim-glow"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Mata Air Sejuk Kesembuhan',
+                        narrative: 'Allah mengabulkan doanya dan memerintahkan Nabi Ayyub AS menghentakkan kakinya ke tanah. Memancarlah mata air sejuk untuk mandi dan minum hingga tubuhnya pulih sehat dan keluarganya kembali berlipat ganda.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="80" r="45" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><path d="M160 65 C160 65 135 98 135 115 A 25 25 0 0 0 185 115 C185 98 160 65 160 65 Z" fill="#5B9BD5"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#7C9E82"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'syuaib',
+                order: 13,
+                name: 'Nabi Syu\'aib AS',
+                arabic: 'شُعَيْبٌ عَلَيْهِ السَّلَامُ',
+                title: 'Kejujuran dalam Timbangan & Muamalah',
+                category: 'akhlak',
+                badge: 'Khatibul Anbiya',
+                nation: 'Penduduk Madyan & Aikah',
+                miracle: 'Kefasihan Tutur Kata Dakwah',
+                quran: 'QS. Hud: 84-95 & Al-A\'raf: 85',
+                emoji: '⚖️',
+                summary: 'Diutus kepada penduduk Madyan agar menegakkan keadilan dalam berdagang dan tidak mengurangi takaran timbangan.',
+                lesson: 'Keberkahan rezeki lahir dari kejujuran dalam bekerja dan berdagang, bukan dari merugikan hak orang lain.',
+                action: 'Pastikan kamu menunaikan hak orang lain secara penuh dan jujur dalam setiap transaksi maupun pekerjaan hari ini.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Kecurangan Dagang di Negeri Madyan',
+                        narrative: 'Penduduk Madyan yang hidup di jalur perdagangan gemar mengurangi takaran saat menjual dan meminta lebih saat membeli, serta merampas harta orang di jalan.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><line x1="160" y1="55" x2="160" y2="155" stroke="#5E8264" stroke-width="5" stroke-linecap="round"/><g class="anim-wave"><line x1="95" y1="80" x2="225" y2="70" stroke="#F57C36" stroke-width="4" stroke-linecap="round"/></g><path d="M0 155 L320 155 L320 200 L0 200 Z" fill="#E8DAC3"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Nasihat Khatibul Anbiya (Ahli Pidato Para Nabi)',
+                        narrative: 'Dengan tutur kata yang sangat menyentuh hati, Nabi Syu\'aib AS menyeru: "Sempurnakanlah takaran dan timbangan dengan adil. Sisa keuntungan yang halal dari Allah lebih baik bagimu jika kamu orang beriman."',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><line x1="160" y1="55" x2="160" y2="155" stroke="#5E8264" stroke-width="5" stroke-linecap="round"/><rect x="130" y="150" width="60" height="10" rx="5" fill="#3B533F"/><line x1="95" y1="75" x2="225" y2="75" stroke="#F57C36" stroke-width="4" stroke-linecap="round"/><path d="M80 105 Q95 118 110 105 Z" fill="#7C9E82"/><path d="M210 105 Q225 118 240 105 Z" fill="#7C9E82"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Keselamatan Orang-Orang yang Jujur',
+                        narrative: 'Karena mayoritas kaum Madyan tetap angkuh dan mengancam mengusir beliau, Allah menurunkan guncangan dahsyat yang membinasakan mereka, sementara Nabi Syu\'aib AS dan kaum beriman diselamatkan.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="48" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="95" r="24" fill="#5E8264"/><path d="M150 95 L157 102 L172 87" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/></g></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'musa',
+                order: 14,
+                name: 'Nabi Musa AS',
+                arabic: 'مُوسَىٰ عَلَيْهِ السَّلَامُ',
+                title: 'Keyakinan Teguh di Saat Terdesak',
+                category: 'keberanian',
+                badge: 'Kalimullah',
+                nation: 'Bani Israil & Fir\'aun (Mesir)',
+                miracle: 'Tongkat Membelah Laut & Taurat',
+                quran: 'QS. Thaha: 9-98 & Asy-Syu\'ara: 61-66',
+                emoji: '🌊',
+                summary: 'Memimpin Bani Israil keluar dari penindasan dan tetap yakin akan pertolongan Allah saat terjepit di tepi Laut Merah.',
+                lesson: 'Saat jalan tampak buntu di depan mata, keyakinan penuh kepada Allah ("Sesungguhnya Tuhanku bersamaku") mampu membelah lautan masalah.',
+                action: 'Hadapi masalah terberatmu hari ini dengan ketenangan dan keyakinan bahwa Allah selalu menyertai hamba-Nya yang berjuang.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Wahyu di Lembah Suci Thuwa',
+                        narrative: 'Allah berbicara langsung kepada Nabi Musa AS di Bukit Sinai dan menganugerahkan mukjizat tongkat yang dapat berubah menjadi ular besar serta tangan yang bercahaya putih untuk menghadapi kesewenang-wenangan Fir\'aun.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><polygon points="60,165 160,55 260,165" fill="#7C9E82"/><circle cx="160" cy="55" r="26" fill="#FFD6BA" class="anim-glow"/><line x1="160" y1="105" x2="160" y2="165" stroke="#8C5828" stroke-width="5" stroke-linecap="round"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Terjepit di Tepi Laut Merah',
+                        narrative: 'Pasukan Fir\'aun mengejar dari belakang sementara Laut Merah membentang di depan. Saat pengikutnya panik, Nabi Musa AS berkata tegas: "Sekali-kali tidak akan tersusul; sesungguhnya Tuhanku bersamaku, Dia akan memberi petunjuk."',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="50" r="25" fill="#FFB88A" class="anim-glow"/><path d="M0 120 Q80 110 160 120 T320 120 L320 200 L0 200 Z" fill="#5B9BD5" class="anim-wave"/><path d="M0 160 Q160 150 320 160 L320 200 L0 200 Z" fill="#E8DAC3"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Terbelahnya Lautan & Turunnya Taurat',
+                        narrative: 'Atas perintah Allah, Nabi Musa AS memukulkan tongkatnya hingga laut terbelah menjadi jalan kering yang menyelamatkan Bani Israil, lalu beliau menerima kitab Taurat sebagai petunjuk umat.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><path d="M0 70 Q95 70 115 165 L0 165 Z" fill="#4A89C2" class="anim-sea-left"/><path d="M320 70 Q225 70 205 165 L320 165 Z" fill="#4A89C2" class="anim-sea-right"/><polygon points="125,165 195,165 175,90 145,90" fill="#E8DAC3"/><circle cx="160" cy="70" r="18" fill="#FFD6BA" class="anim-glow"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'harun',
+                order: 15,
+                name: 'Nabi Harun AS',
+                arabic: 'هَارُونُ عَلَيْهِ السَّلَامُ',
+                title: 'Kelembutan Tutur Kata & Persaudaraan',
+                category: 'akhlak',
+                badge: 'Nabi ke-15',
+                nation: 'Bani Israil (Mesir & Sinai)',
+                miracle: 'Kefasihan Lisan & Pendamping Dakwah',
+                quran: 'QS. Thaha: 29-36 & Al-A\'raf: 150',
+                emoji: '🤝',
+                summary: 'Saudara setia Nabi Musa AS yang dianugerahi kefasihan berbicara untuk mendampingi dakwah dengan penuh kelembutan.',
+                lesson: 'Saling mendukung dalam kebaikan dan menjaga persaudaraan adalah kekuatan besar dalam mengemban amanah.',
+                action: 'Sampaikan nasihat atau koreksi kepada teman dengan nada suara yang lembut dan penuh kasih sayang.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Doa Persaudaraan yang Dikabulkan',
+                        narrative: 'Nabi Musa AS memohon kepada Allah agar saudaranya, Nabi Harun AS yang lebih fasih lisannya, diangkat menjadi rasul pendamping untuk menguatkan dakwah di hadapan Fir\'aun.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="52" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><circle cx="140" cy="95" r="24" fill="#5E8264" opacity="0.9"/><circle cx="180" cy="95" r="24" fill="#F57C36" opacity="0.85"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Mengutamakan Persatuan Umat',
+                        narrative: 'Saat Nabi Musa AS bermunajat di Bukit Sinai, sebagian Bani Israil disesatkan Samiri menyembah patung anak sapi. Nabi Harun AS menasihati mereka dengan sabar agar tidak terpecah belah sambil menunggu kepulangan Nabi Musa.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="85" r="45" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><path d="M125 110 Q160 80 195 110" fill="none" stroke="#5E8264" stroke-width="5" stroke-linecap="round"/><circle cx="160" cy="75" r="14" fill="#F57C36"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Kesetiaan Hingga Akhir Perjalanan',
+                        narrative: 'Nabi Harun AS terus mendampingi Nabi Musa AS membimbing Bani Israil di padang Tih dengan penuh kesabaran, kelembutan, dan kepatuhan kepada perintah Allah.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="60" r="26" fill="#FFD6BA" class="anim-glow"/><path d="M0 155 Q160 135 320 155 L320 200 L0 200 Z" fill="#7C9E82"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'dzulkifli',
+                order: 16,
+                name: 'Nabi Dzulkifli AS',
+                arabic: 'ذُو الْكِفْلِ عَلَيْهِ السَّلَامُ',
+                title: 'Menepati Janji & Menahan Amarah',
+                category: 'kesabaran',
+                badge: 'Nabi ke-16',
+                nation: 'Penduduk Negeri Syam',
+                miracle: 'Kesabaran Luar Biasa Menahan Amarah',
+                quran: 'QS. Al-Anbiya: 85 & Shad: 48',
+                emoji: '🕊️',
+                summary: 'Pemimpin yang adil yang sanggup menepati janji berpuasa di siang hari, beribadah di malam hari, dan tidak pernah marah.',
+                lesson: 'Kemampuan mengendalikan amarah dan komitmen menepati janji adalah ciri pemimpin dan pribadi yang bertakwa.',
+                action: 'Tahan emosimu saat menghadapi hal yang memancing kemarahan hari ini; tarik napas dan ucapkan Ta\'awudz.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Kesanggupan Memikul Amanah Kepemimpinan',
+                        narrative: 'Ketika seorang raja mencari penerus yang sanggup berpuasa di siang hari, salat di malam hari, dan tidak pernah marah saat mengadili rakyat, Basyar (Nabi Dzulkifli AS) menyanggupi amanah tersebut dengan tulus.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="50" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="95" r="26" fill="#5E8264"/><path d="M150 95 L157 102 L172 87" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Ujian Bertubi-tubi Tanpa Amarah',
+                        narrative: 'Iblis berupaya memancing kemarahan Nabi Dzulkifli AS dengan datang mengadu di saat waktu istirahat siang dan malam berturut-turut, namun beliau tetap melayani aduan itu dengan lembut tanpa marah sedikit pun.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="50" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><path d="M120 100 Q145 75 160 95 Q175 75 200 100 Q175 115 160 105 Q145 115 120 100 Z" fill="#5E8264"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Namanya Diabadikan dalam Al-Qur\'an',
+                        narrative: 'Karena keteguhan menepati janji (Dzulkifli artinya pemilik kesanggupan), Allah memuji beliau dalam Al-Qur\'an sebagai bagian dari orang-orang yang sabar dan saleh.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="75" r="35" fill="#FFD6BA" class="anim-glow"/><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'daud',
+                order: 17,
+                name: 'Nabi Daud AS',
+                arabic: 'دَاوُودُ عَلَيْهِ السَّلَامُ',
+                title: 'Syukur Seorang Raja & Keindahan Tasbih',
+                category: 'akhlak',
+                badge: 'Nabi ke-17',
+                nation: 'Bani Israil (Palestina)',
+                miracle: 'Kitab Zabur & Melunakkan Besi',
+                quran: 'QS. Saba: 10-11 & Shad: 17-20',
+                emoji: '⛰️',
+                summary: 'Raja yang adil dan gemar berpuasa, dikaruniai suara merdu sehingga gunung-gunung dan burung ikut bertasbih bersamanya.',
+                lesson: 'Kekuasaan dan kelebihan bakat hendaknya membuat kita semakin banyak bersyukur dan mengingat Allah.',
+                action: 'Baca Al-Qur\'an atau bertasbihlah dengan suara yang tenang dan penuh penghayatan hari ini.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Keberanian Mengalahkan Jalut',
+                        narrative: 'Saat masih muda, Nabi Daud AS maju dengan penuh keberanian dan tawakal mengalahkan panglima raksasa Jalut hanya dengan ketapel batu atas izin Allah.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="85" r="45" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><polygon points="160,55 190,95 160,135 130,95" fill="#F57C36"/></g><path d="M0 155 L320 155 L320 200 L0 200 Z" fill="#7C9E82"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Gunung & Burung Ikut Bertasbih',
+                        narrative: 'Allah menganugerahkan kitab Zabur dan suara yang sangat merdu kepada Nabi Daud AS. Setiap kali beliau bertasbih pagi dan petang, gunung-gunung dan burung turut bertasbih bersamanya.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><polygon points="30,165 110,75 190,165" fill="#7C9E82"/><polygon points="130,165 215,65 300,165" fill="#5E8264"/><g class="anim-float"><path d="M115 55 Q125 48 135 55 Q145 48 155 55" fill="none" stroke="#F57C36" stroke-width="3" stroke-linecap="round"/><path d="M175 45 Q185 38 195 45 Q205 38 215 45" fill="none" stroke="#F57C36" stroke-width="3" stroke-linecap="round"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Kemandirian & Puasa Daud',
+                        narrative: 'Meski menjadi raja besar, Nabi Daud AS makan dari hasil keringatnya sendiri sebagai pembuat baju zirah dari besi yang dilunakkan Allah, serta rutin berpuasa selang-seling sehari.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="48" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><rect x="130" y="75" width="60" height="45" rx="12" fill="#5E8264"/><circle cx="160" cy="97" r="10" fill="#FFD6BA"/></g></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'sulaiman',
+                order: 18,
+                name: 'Nabi Sulaiman AS',
+                arabic: 'سُلَيْمَانُ عَلَيْهِ السَّلَامُ',
+                title: 'Kerendahan Hati di Puncak Kekuasaan',
+                category: 'akhlak',
+                badge: 'Nabi ke-18',
+                nation: 'Bani Israil & Negeri Saba',
+                miracle: 'Memahami Bahasa Hewan & Menundukkan Angin',
+                quran: 'QS. An-Naml: 15-44',
+                emoji: '👑',
+                summary: 'Raja yang memahami bahasa hewan dan menundukkan angin, namun tetap rendah hati dan selalu bersyukur atas karunia Allah.',
+                lesson: 'Semakin tinggi kedudukan dan ilmu seseorang, semakin rendah hati ia seharusnya di hadapan sesama makhluk Allah.',
+                action: 'Sayangi makhluk kecil di sekitarmu dan ucapkan doa syukur atas setiap nikmat yang Allah titipkan padamu.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Tersenyum Mendengar Semut Kecil',
+                        narrative: 'Saat memimpin pasukan manusia, jin, dan burung melewati lembah semut, Nabi Sulaiman AS mendengar peringatan seekor ratu semut, lalu tersenyum dan berdoa agar selalu pandai bersyukur.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="80" r="45" fill="#FFD6BA" class="anim-glow"/><g class="anim-float"><path d="M125 95 L135 70 L160 85 L185 70 L195 95 Z" fill="#F57C36"/><rect x="125" y="95" width="70" height="10" rx="4" fill="#5E8264"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Berita Burung Hud-hud & Ratu Balqis',
+                        narrative: 'Burung Hud-hud mengabarkan adanya negeri Saba yang makmur dipimpin Ratu Balqis namun menyembah matahari. Nabi Sulaiman AS mengirim surat santun mengajak mereka berserah diri kepada Allah.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="65" r="28" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><path d="M125 95 Q160 75 195 95 L160 115 Z" fill="#5E8264"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#E8DAC3"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Kemegahan yang Mengantar pada Tauhid',
+                        narrative: 'Melihat kebijaksanaan dan mukjizat Nabi Sulaiman AS, Ratu Balqis menyadari kekeliruannya lalu menyatakan beriman dan berserah diri bersama Nabi Sulaiman kepada Allah Tuhan semesta alam.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="52" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="95" r="26" fill="#5E8264"/><path d="M148 95 L156 103 L174 85" fill="none" stroke="#FFD6BA" stroke-width="4" stroke-linecap="round"/></g></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'ilyas',
+                order: 19,
+                name: 'Nabi Ilyas AS',
+                arabic: 'إِلْيَاسُ عَلَيْهِ السَّلَامُ',
+                title: 'Keteguhan Dakwah di Negeri Ba\'labak',
+                category: 'keberanian',
+                badge: 'Nabi ke-19',
+                nation: 'Penduduk Ba\'labak (Syam)',
+                miracle: 'Doa Hujan Rahmat Setelah Kekeringan',
+                quran: 'QS. Ash-Shaffat: 123-132',
+                emoji: '🌦️',
+                summary: 'Berjuang menyeru kaumnya di negeri Ba\'labak agar meninggalkan penyembahan berhala Ba\'l dan kembali menyembah Allah.',
+                lesson: 'Kebenaran harus tetap disampaikan dengan sabar dan istiqamah meski menghadapi penolakan keras.',
+                action: 'Tetap teguh menjalankan ibadah wajibmu meskipun orang-orang di sekitarmu sedang lalai.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Menentang Penyembahan Berhala Ba\'l',
+                        narrative: 'Penduduk kota Ba\'labak menyembah patung bernama Ba\'l. Nabi Ilyas AS bertanya dengan tegas mengapa mereka meninggalkan Allah, sebaik-baik Pencipta, demi patung yang tak memberi manfaat.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="75" r="40" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="85" r="22" fill="#5E8264"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Ujian Kemarau Panjang di Negeri Ba\'labak',
+                        narrative: 'Karena kaumnya mendustakan dakwah dan mengejar Nabi Ilyas AS, Allah menahan hujan selama tiga tahun sehingga tanah mengering dan mereka menyadari kesalahan mereka.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="55" r="26" fill="#FF9859" class="anim-glow"/><path d="M0 155 Q160 145 320 155 L320 200 L0 200 Z" fill="#D9C3A3"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Hujan Rahmat yang Menghidupkan Bumi',
+                        narrative: 'Ketika kaumnya memohon agar Nabi Ilyas AS berdoa kepada Allah, beliau pun memanjatkan doa hingga turunlah hujan rahmat yang menyuburkan kembali negeri tersebut.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><g class="anim-float"><circle cx="135" cy="60" r="22" fill="#A1BCA5"/><circle cx="160" cy="55" r="26" fill="#7C9E82"/><circle cx="185" cy="60" r="22" fill="#A1BCA5"/></g><line x1="135" y1="95" x2="130" y2="120" stroke="#5B9BD5" stroke-width="3" stroke-linecap="round" class="anim-wave"/><line x1="160" y1="95" x2="155" y2="120" stroke="#5B9BD5" stroke-width="3" stroke-linecap="round" class="anim-wave"/><line x1="185" y1="95" x2="180" y2="120" stroke="#5B9BD5" stroke-width="3" stroke-linecap="round" class="anim-wave"/><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#5E8264"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'ilyasa',
+                order: 20,
+                name: 'Nabi Ilyasa AS',
+                arabic: 'الْيَسَعُ عَلَيْهِ السَّلَامُ',
+                title: 'Estafet Kebaikan & Kedamaian Umat',
+                category: 'akhlak',
+                badge: 'Nabi ke-20',
+                nation: 'Bani Israil (Lembah Yordania)',
+                miracle: 'Membimbing Umat Hidup Rukun & Damai',
+                quran: 'QS. Al-An\'am: 86 & Shad: 48',
+                emoji: '🌿',
+                summary: 'Penerus dakwah Nabi Ilyas AS yang membimbing Bani Israil hidup rukun, aman, dan makmur dalam ketaatan kepada Allah.',
+                lesson: 'Melanjutkan estafet kebaikan dari generasi sebelumnya dengan penuh tanggung jawab akan menciptakan masyarakat yang damai.',
+                action: 'Hargai ilmu dari guru atau orang tuamu dan teruskan kebiasaan baik yang mereka ajarkan.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Belajar Langsung dari Nabi Ilyas AS',
+                        narrative: 'Nabi Ilyasa AS sejak muda setia mendampingi Nabi Ilyas AS dalam suka dan duka dakwah, menyerap ilmu dan keteladanan langsung dari sang guru.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="48" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><circle cx="142" cy="95" r="20" fill="#5E8264"/><circle cx="178" cy="95" r="20" fill="#7C9E82"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Melanjutkan Amanah Kenabian',
+                        narrative: 'Setelah wafatnya Nabi Ilyas AS, Allah mengangkat Nabi Ilyasa AS menjadi nabi untuk melanjutkan bimbingan syariat Taurat kepada Bani Israil dengan penuh kelembutan.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="85" r="45" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><path d="M160 135 L160 80" stroke="#5E8264" stroke-width="5" stroke-linecap="round"/><circle cx="160" cy="70" r="14" fill="#F57C36"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Masa Kedamaian & Kesejahteraan Umat',
+                        narrative: 'Selama Nabi Ilyasa AS membimbing mereka, Bani Israil hidup dalam suasana rukun, taat beribadah, dan dilimpahi kedamaian oleh Allah.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="52" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="95" r="26" fill="#5E8264"/><path d="M148 95 L156 103 L174 85" fill="none" stroke="#FFD6BA" stroke-width="4" stroke-linecap="round"/></g></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'yunus',
+                order: 21,
+                name: 'Nabi Yunus AS',
+                arabic: 'يُونُسُ عَلَيْهِ السَّلَامُ',
+                title: 'Kekuatan Doa & Pengakuan Diri',
+                category: 'kesabaran',
+                badge: 'Dzun Nun',
+                nation: 'Penduduk Ninawa (Irak)',
+                miracle: 'Selamat di Dalam Perut Ikan Paus',
+                quran: 'QS. Al-Anbiya: 87-88 & Ash-Shaffat: 139',
+                emoji: '🐋',
+                summary: 'Berdzikir memohon ampun dalam kegelapan perut ikan paus hingga Allah menyelamatkan dan memuliakan beliau kembali.',
+                lesson: 'Mengakui kekhilafan di hadapan Allah dan memperbanyak tasbih adalah kunci keluar dari kegelapan kesedihan dan kesulitan.',
+                action: 'Baca doa Nabi Yunus ("Laa ilaaha illa Anta Subhanaka inni kuntu minazh-zhalimin") saat hati merasa sempit.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Meninggalkan Ninawa & Undian di Kapal',
+                        narrative: 'Merasa lelah karena kaum Ninawa menolak dakwah, Nabi Yunus AS meninggalkan kota tanpa menunggu izin Allah, lalu menaiki kapal yang diterpa badai hingga undian menjatuhkan nama beliau ke laut.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><g class="anim-wave"><path d="M100 110 L220 110 L200 140 L120 140 Z" fill="#9C6635"/></g><path d="M0 135 Q40 125 80 135 T160 135 T240 135 T320 135 L320 200 L0 200 Z" fill="#5B9BD5"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Tasbih di Dalam Kegelapan Perut Ikan',
+                        narrative: 'Seekor ikan besar menelan Nabi Yunus AS tanpa melukainya. Dalam tiga lapis kegelapan, beliau terus bertasbih: "Laa ilaaha illa Anta Subhanaka inni kuntu minazh-zhalimin."',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><rect x="20" y="15" width="280" height="165" rx="24" fill="#1E3A4C"/><g class="anim-wave"><path d="M75 110 Q160 65 235 110 Q160 155 75 110 Z" fill="#3B6988"/><path d="M230 110 L255 90 L250 110 L255 130 Z" fill="#3B6988"/><circle cx="155" cy="110" r="16" fill="#FFD6BA" class="anim-glow"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Diselamatkan & Berimannya Kaum Ninawa',
+                        narrative: 'Allah menyelamatkan Nabi Yunus AS ke tepi pantai dan menumbuhkan pohon labu untuk menaunginya. Beliau pun kembali ke Ninawa dan mendapati lebih dari seratus ribu penduduknya telah beriman.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="240" cy="48" r="22" fill="#FFD6BA" class="anim-glow"/><path d="M0 135 Q80 128 160 135 T320 135 L320 200 L0 200 Z" fill="#7AB3D9"/><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#E8DAC3"/><g class="anim-float"><circle cx="140" cy="135" r="22" fill="#7C9E82"/></g></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'zakariya',
+                order: 22,
+                name: 'Nabi Zakariya AS',
+                arabic: 'زَكَرِيَّا عَلَيْهِ السَّلَامُ',
+                title: 'Doa Lembut yang Tidak Pernah Putus',
+                category: 'kesabaran',
+                badge: 'Nabi ke-22',
+                nation: 'Bani Israil (Baitul Maqdis)',
+                miracle: 'Dianugerahi Putra di Usia Sangat Tua',
+                quran: 'QS. Maryam: 2-11 & Ali Imran: 37-41',
+                emoji: '🕌',
+                summary: 'Pengasuh Maryam di Baitul Maqdis yang terus berdoa dengan suara lembut di usia senja hingga dikaruniai putra bernama Yahya.',
+                lesson: 'Tidak ada kata terlambat dalam berdoa; munajat yang tulus dari hati yang lembut pasti didengar oleh Allah Yang Maha Mengabulkan.',
+                action: 'Panaskan waktu doamu dengan suara lirih dan penuh harap seusai salat hari ini.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Keajaiban Rezeki di Mihrab Maryam',
+                        narrative: 'Setiap kali Nabi Zakariya AS masuk ke mihrab Baitul Maqdis menemui Maryam, beliau selalu menemukan buah-buahan musim panas di musim dingin dan sebaliknya. Maryam berkata: "Itu dari sisi Allah."',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><path d="M110 165 L110 95 A 50 50 0 0 1 210 95 L210 165 Z" fill="#E3EBE4" stroke="#5E8264" stroke-width="4"/><circle cx="160" cy="95" r="20" fill="#FFD6BA" class="anim-glow"/><path d="M0 165 L320 165 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Munajat Lembut di Usia Senja',
+                        narrative: 'Tergerak oleh keajaiban itu, Nabi Zakariya AS berdoa dengan suara lembut memohon penerus dakwah meski tulang-tulangnya telah lemah dan rambutnya memutih.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="85" r="48" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><path d="M135 110 Q145 90 158 105 L158 125 L135 125 Z" fill="#5E8264"/><path d="M185 110 Q175 90 162 105 L162 125 L185 125 Z" fill="#5E8264"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Kabar Gembira Kelahiran Yahya',
+                        narrative: 'Malaikat memanggil Nabi Zakariya AS yang sedang berdiri salat di mihrab dengan kabar gembira kelahiran seorang putra bernama Yahya yang membenarkan kalimat dari Allah.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="80" r="35" fill="#FFD6BA" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="95" r="22" fill="#5E8264"/><circle cx="160" cy="95" r="8" fill="#FFFFFF"/></g><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#7C9E82"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'yahya',
+                order: 23,
+                name: 'Nabi Yahya AS',
+                arabic: 'يَحْيَىٰ عَلَيْهِ السَّلَامُ',
+                title: 'Hikmah Sejak Belia & Kelembutan Hati',
+                category: 'akhlak',
+                badge: 'Nabi ke-23',
+                nation: 'Bani Israil (Palestina)',
+                miracle: 'Dianugerahi Hikmah Sejak Kanak-kanak',
+                quran: 'QS. Maryam: 12-15 & Ali Imran: 39',
+                emoji: '📖',
+                summary: 'Dianugerahi hikmah sejak kanak-kanak, sangat berbakti kepada kedua orang tua, serta berhati lembut dan tidak sombong.',
+                lesson: 'Kecerdasan dan ilmu yang sejati akan melahirkan rasa takut kepada Allah, kelembutan hati, dan bakti kepada orang tua.',
+                action: 'Baca Al-Qur\'an dengan sungguh-sungguh dan jaga sopan santun bicaramu kepada orang tua dan guru.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Memegang Kitab dengan Sungguh-sungguh',
+                        narrative: 'Allah berfirman: "Wahai Yahya! Ambillah (pelajarilah) Kitab (Taurat) itu dengan sungguh-sungguh." Sejak kecil beliau lebih gemar membaca wahyu dan beribadah daripada bermain sia-sia.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="50" fill="#FFEDE0" class="anim-glow"/><g class="anim-float"><path d="M115 85 Q138 75 160 88 Q182 75 205 85 L205 125 Q182 115 160 128 Q138 115 115 125 Z" fill="#5E8264"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Kelembutan Hati & Bakti kepada Orang Tua',
+                        narrative: 'Al-Qur\'an memuji Nabi Yahya AS sebagai pribadi yang penuh rasa kasih sayang (Hanan), suci dari dosa, bertakwa, dan sangat berbakti kepada kedua orang tuanya tanpa sedikit pun sifat sombong.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="48" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><path d="M160 120 C160 120 130 98 130 80 C130 70 139 62 148 62 C154 62 158 66 160 70 C162 66 166 62 172 62 C181 62 190 70 190 80 C190 98 160 120 160 120 Z" fill="#F57C36"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Keberanian Menyampaikan Hukum Allah',
+                        narrative: 'Nabi Yahya AS dikenal tegas mempertahankan kebenaran hukum Allah di hadapan penguasa yang zalim hingga meraih kemuliaan syahid di sisi Allah.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="70" r="32" fill="#FFD6BA" class="anim-glow"/><path d="M0 155 Q160 140 320 155 L320 200 L0 200 Z" fill="#5E8264"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'isa',
+                order: 24,
+                name: 'Nabi Isa AS',
+                arabic: 'عِيسَىٰ عَلَيْهِ السَّلَامُ',
+                title: 'Kasih Sayang, Keajaiban & Ketulusan',
+                category: 'akhlak',
+                badge: 'Ulul Azmi',
+                nation: 'Bani Israil (Nazareth & Yerusalem)',
+                miracle: 'Kitab Injil & Menyembuhkan Penyakit',
+                quran: 'QS. Maryam: 16-34 & Al-Maidah: 110',
+                emoji: '✨',
+                summary: 'Lahir tanpa ayah atas kuasa Allah, berbicara saat masih bayi, dan dianugerahi mukjizat menyembuhkan orang sakit atas izin Allah.',
+                lesson: 'Gunakan setiap kelebihan yang Allah berikan untuk menebarkan kasih sayang, membantu sesama, dan mengajak manusia kembali kepada Tuhan Yang Esa.',
+                action: 'Bantu ringankan kesulitan satu orang di sekitarmu hari ini dengan niat tulus mengharap rida Allah.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Kelahiran Ajaib & Berbicara di Buayan',
+                        narrative: 'Atas kuasa Allah, Siti Maryam yang suci melahirkan Nabi Isa AS tanpa seorang ayah. Saat masih bayi di buaian, Nabi Isa berbicara membela kesucian ibundanya dan menyatakan dirinya hamba serta nabi Allah.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="85" r="55" fill="#FFD6BA" opacity="0.7" class="anim-glow"/><g class="anim-float"><path d="M160 55 L167 78 L190 85 L167 92 L160 115 L153 92 L130 85 L153 78 Z" fill="#5E8264"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Mukjizat Penyembuhan & Kitab Injil',
+                        narrative: 'Allah menurunkan kitab Injil dan menganugerahkan mukjizat kepada Nabi Isa AS: menyembuhkan orang buta sejak lahir, menyembuhkan penyakit kusta, dan menghidupkan orang mati atas izin Allah.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="48" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><path d="M160 120 C160 120 130 98 130 80 C130 70 139 62 148 62 C154 62 158 66 160 70 C162 66 166 62 172 62 C181 62 190 70 190 80 C190 98 160 120 160 120 Z" fill="#5E8264"/></g></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Pengikut Setia Hawariyyun & Diangkat ke Langit',
+                        narrative: 'Didampingi para sahabat setianya (Al-Hawariyyun), Nabi Isa AS menyebarkan tauhid dan kabar gembira tentang akan datangnya Nabi terakhir bernama Ahmad (Muhammad ﷺ), hingga Allah menyelamatkannya dengan mengangkatnya ke sisi-Nya.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="55" r="32" fill="#FFEDE0" class="anim-glow"/><path d="M85 160 Q160 105 235 160" fill="none" stroke="#5E8264" stroke-width="4" stroke-dasharray="6 6"/></svg>`
+                    }
+                ]
+            },
+            {
+                id: 'muhammad',
+                order: 25,
+                name: 'Nabi Muhammad ﷺ',
+                arabic: 'مُحَمَّدٌ ﷺ',
+                title: 'Rahmat bagi Seluruh Alam',
+                category: 'akhlak',
+                badge: 'Khatamul Anbiya',
+                nation: 'Seluruh Umat Manusia & Alam Semesta',
+                miracle: 'Al-Qur\'an Al-Karim',
+                quran: 'QS. Al-Anbiya: 107 & Al-Qalam: 4',
+                emoji: '🌙',
+                summary: 'Penutup para nabi dan rasul, teladan paripurna dalam kejujuran (Al-Amin), kelembutan akhlak, pemaaf, dan kasih sayang.',
+                lesson: 'Kemuliaan sejati tercermin dari akhlak yang lembut, kejujuran yang terjaga, dan hati yang mudah memaafkan sesama.',
+                action: 'Perbanyak salawat hari ini, tebarkan senyum ramah kepada sesama, dan jaga amanah sekecil apa pun.',
+                scenes: [
+                    {
+                        title: 'Babak 1: Al-Amin yang Terpercaya & Wahyu Pertama',
+                        narrative: 'Sejak muda di Makkah, Nabi Muhammad ﷺ digelari Al-Amin karena kejujurannya. Di Gua Hira pada usia 40 tahun, Malaikat Jibril menyampaikan wahyu pertama "Iqra" yang membawa cahaya petunjuk Al-Qur\'an.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="95" r="55" fill="#FFEDE0" opacity="0.7" class="anim-glow"/><g class="anim-float"><circle cx="160" cy="95" r="34" fill="#5E8264"/><path d="M150 95 L158 103 L173 87" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M0 165 Q90 135 160 155 T320 145 L320 200 L0 200 Z" fill="#A1BCA5"/></svg>`
+                    },
+                    {
+                        title: 'Babak 2: Kasih Sayang Tanpa Balas Dendam di Thaif',
+                        narrative: 'Meski disakiti dan dilempari batu saat berdakwah di Thaif, Nabi Muhammad ﷺ menolak tawaran malaikat penjaga gunung untuk menimpakan azab, melainkan berdoa agar lahir generasi yang menyembah Allah.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="100" r="50" fill="#E3EBE4" class="anim-glow"/><g class="anim-float"><path d="M160 125 C160 125 125 102 125 82 C125 70 135 62 146 62 C153 62 158 66 160 70 C162 66 167 62 174 62 C185 62 195 70 195 82 C195 102 160 125 160 125 Z" fill="#F57C36"/></g><path d="M110 155 Q160 140 210 155" fill="none" stroke="#5E8264" stroke-width="4" stroke-linecap="round"/></svg>`
+                    },
+                    {
+                        title: 'Babak 3: Fathu Makkah & Rahmatan lil \'Alamin',
+                        narrative: 'Saat kembali menaklukkan kota Makkah dengan kemenangan penuh, Nabi Muhammad ﷺ tidak membalas dendam kepada penduduk yang dahulu memusuhinya, melainkan memberi pengampunan massal penuh kasih sayang.',
+                        svg: `<svg viewBox="0 0 320 200" class="w-full h-full max-w-sm"><circle cx="160" cy="40" r="24" fill="#FFD6BA" class="anim-glow"/><path d="M0 160 Q160 145 320 160 L320 200 L0 200 Z" fill="#E8DAC3"/><g class="anim-float"><rect x="125" y="75" width="70" height="75" rx="6" fill="#29382C"/><rect x="125" y="92" width="70" height="8" fill="#F57C36"/><rect x="152" y="112" width="16" height="24" rx="2" fill="#D9C3A3"/></g></svg>`
+                    }
+                ]
+            }
+        ];
+
+        // ---------------------------------------------------------
+        // 2. STATE APLIKASI & PENYIMPANAN LOCALSTORAGE
+        // ---------------------------------------------------------
+        const STORAGE_KEY = 'jejak_nabi_state_v1';
+        let userState = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+            completedIds: [],
+            darkMode: false
+        };
+
+        let currentProphet = null;
+        let currentSceneIndex = 0;
+        let autoPlayInterval = null;
+        let isAnimPaused = false;
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        function saveUserState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(userState));
+            updateCompletedBadge();
+        }
+
+        function updateCompletedBadge() {
+            const badge = document.getElementById('completed-badge');
+            badge.textContent = `${userState.completedIds.length}/${PROPHETS_DATA.length}`;
+        }
+
+        function showToast(msg, icon = '🌟') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            document.getElementById('toast-icon').textContent = icon;
+            toast.classList.remove('opacity-0', 'translate-y-2');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-2');
+            }, 2400);
+        }
+
+        // ---------------------------------------------------------
+        // 3. TEMA DARK / LIGHT MODE
+        // ---------------------------------------------------------
+        function applyTheme() {
+            const html = document.documentElement;
+            if (userState.darkMode) html.classList.add('dark');
+            else html.classList.remove('dark');
+        }
+
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            userState.darkMode = !userState.darkMode;
+            applyTheme();
+            saveUserState();
+        });
+
+        // ---------------------------------------------------------
+        // 4. RENDER DAFTAR KISAH NABI (LIBRARY VIEW)
+        // ---------------------------------------------------------
+        function renderProphetGrid() {
+            const grid = document.getElementById('prophet-grid');
+            grid.innerHTML = '';
+
+            const filtered = PROPHETS_DATA.filter(p => {
+                const matchCat = currentFilter === 'all' || p.category === currentFilter;
+                const q = currentSearch.toLowerCase().trim();
+                const matchSearch = !q ||
+                    p.name.toLowerCase().includes(q) ||
+                    p.title.toLowerCase().includes(q) ||
+                    p.summary.toLowerCase().includes(q) ||
+                    String(p.order) === q;
+                return matchCat && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-10 bg-white dark:bg-darkCard rounded-3xl border border-beige-200 dark:border-darkBorder">
+                        <p class="text-2xl mb-2">🔍</p>
+                        <p class="text-sm font-bold text-sage-800 dark:text-beige-100">Kisah tidak ditemukan</p>
+                        <p class="text-xs text-sage-500 mt-1">Coba kata kunci lain seperti "Adam", "Yusuf", atau "Sabar"</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(prophet => {
+                const isDone = userState.completedIds.includes(prophet.id);
+                const card = document.createElement('div');
+                card.className = 'group bg-white dark:bg-darkCard rounded-3xl p-5 border border-beige-200 dark:border-darkBorder hover:border-sage-400 dark:hover:border-sage-500 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between';
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <div class="relative w-12 h-12 rounded-2xl bg-beige-100 dark:bg-darkBg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                                ${prophet.emoji}
+                                <span class="absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-sage-500 text-white text-[10px] font-extrabold flex items-center justify-center shadow-xs">
+                                    ${prophet.order}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-2.5 py-1 rounded-full bg-sage-100 dark:bg-sage-800/70 text-sage-700 dark:text-sage-300 text-[10px] font-bold">
+                                    ${prophet.badge}
+                                </span>
+                                ${isDone ? `
+                                    <span class="w-6 h-6 rounded-full bg-pastelOrange-100 dark:bg-pastelOrange-500/20 text-pastelOrange-500 flex items-center justify-center" title="Sudah Dipelajari">
+                                        <i data-lucide="check" class="w-3.5 h-3.5 stroke-[3]"></i>
+                                    </span>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <h3 class="font-extrabold text-base text-sage-900 dark:text-beige-50">${prophet.name}</h3>
+                        <p class="text-xs font-bold text-pastelOrange-500 dark:text-pastelOrange-300 mt-0.5">${prophet.title}</p>
+                        <p class="text-xs text-sage-600 dark:text-sage-400 mt-2 leading-relaxed line-clamp-3">
+                            ${prophet.summary}
+                        </p>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-beige-200/60 dark:border-darkBorder flex items-center justify-between text-xs font-bold text-sage-600 dark:text-sage-300">
+                        <span>${prophet.scenes.length} Babak Animasi</span>
+                        <span class="inline-flex items-center gap-1 text-sage-500 group-hover:translate-x-1 transition-transform">
+                            Tonton <i data-lucide="play-circle" class="w-4 h-4"></i>
+                        </span>
+                    </div>
+                `;
+
+                card.addEventListener('click', () => openStoryPlayer(prophet.id));
+                grid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        // Pencarian Real-time
+        document.getElementById('search-prophet').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            renderProphetGrid();
+        });
+
+        // Filter Kategori
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active', 'bg-sage-500', 'text-white', 'shadow-xs');
+                    b.classList.add('bg-white', 'dark:bg-darkCard', 'text-sage-700', 'dark:text-beige-200', 'border', 'border-beige-200', 'dark:border-darkBorder');
+                });
+                btn.classList.add('active', 'bg-sage-500', 'text-white', 'shadow-xs');
+                btn.classList.remove('bg-white', 'dark:bg-darkCard', 'text-sage-700', 'dark:text-beige-200', 'border', 'border-beige-200', 'dark:border-darkBorder');
+
+                currentFilter = btn.getAttribute('data-filter');
+                renderProphetGrid();
+            });
+        });
+
+        // ---------------------------------------------------------
+        // 5. PANGGUNG ANIMASI PENDEK & KONTROL BABAK
+        // ---------------------------------------------------------
+        function openStoryPlayer(prophetId) {
+            currentProphet = PROPHETS_DATA.find(p => p.id === prophetId);
+            if (!currentProphet) return;
+
+            currentSceneIndex = 0;
+            stopAutoPlay();
+
+            // Isi info header nabi & detail terinci
+            document.getElementById('player-badge').textContent = `Nabi ke-${currentProphet.order} • ${currentProphet.badge}`;
+            document.getElementById('player-title').textContent = currentProphet.name;
+            document.getElementById('player-arabic').textContent = currentProphet.arabic;
+            document.getElementById('player-nation').textContent = currentProphet.nation;
+            document.getElementById('player-miracle').textContent = currentProphet.miracle;
+            document.getElementById('player-quran').textContent = currentProphet.quran;
+            document.getElementById('player-lesson').textContent = currentProphet.lesson;
+            document.getElementById('player-action').textContent = currentProphet.action;
+
+            updateMarkLearnedButton();
+            renderScene();
+
+            // Beralih tampilan dari daftar kisah ke panggung animasi dengan mulus
+            document.getElementById('view-library').classList.add('hidden');
+            document.getElementById('view-player').classList.remove('hidden');
+            document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderScene() {
+            if (!currentProphet) return;
+            const totalScenes = currentProphet.scenes.length;
+            const scene = currentProphet.scenes[currentSceneIndex];
+
+            // Update Progress Bar segmen di atas panggung
+            const progressContainer = document.getElementById('scene-progress-bars');
+            progressContainer.innerHTML = '';
+            for (let i = 0; i < totalScenes; i++) {
+                const bar = document.createElement('div');
+                bar.className = `h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                    i <= currentSceneIndex ? 'bg-pastelOrange-400' : 'bg-black/20 dark:bg-white/20'
+                }`;
+                progressContainer.appendChild(bar);
+            }
+
+            // Update teks babak & narasi
+            document.getElementById('scene-counter').textContent = `Babak ${currentSceneIndex + 1} / ${totalScenes}`;
+            document.getElementById('scene-title-short').textContent = scene.title;
+            document.getElementById('scene-narrative').textContent = scene.narrative;
+
+            // Suntikkan SVG Animasi Pendek dengan efek transisi halus
+            const stage = document.getElementById('animation-stage');
+            stage.innerHTML = `<div class="w-full h-full flex items-center justify-center anim-scene-enter">${scene.svg}</div>`;
+
+            // Update status tombol Sebelumnya / Selanjutnya
+            const btnPrev = document.getElementById('btn-prev-scene');
+            const btnNext = document.getElementById('btn-next-scene');
+            btnPrev.disabled = currentSceneIndex === 0;
+
+            if (currentSceneIndex === totalScenes - 1) {
+                btnNext.innerHTML = `<span>Selesai</span> <i data-lucide="check" class="w-4 h-4"></i>`;
+            } else {
+                btnNext.innerHTML = `<span>Selanjutnya</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>`;
+            }
+
+            lucide.createIcons();
+        }
+
+        // Navigasi Babak
+        document.getElementById('btn-prev-scene').addEventListener('click', () => {
+            if (currentSceneIndex > 0) {
+                currentSceneIndex--;
+                renderScene();
+            }
+        });
+
+        document.getElementById('btn-next-scene').addEventListener('click', () => {
+            if (!currentProphet) return;
+            if (currentSceneIndex < currentProphet.scenes.length - 1) {
+                currentSceneIndex++;
+                renderScene();
+            } else {
+                // Babak terakhir selesai
+                stopAutoPlay();
+                markCurrentProphetLearned();
+            }
+        });
+
+        // Kembali ke Daftar Kisah
+        document.getElementById('btn-back-library').addEventListener('click', () => {
+            stopAutoPlay();
+            document.getElementById('view-player').classList.add('hidden');
+            document.getElementById('view-library').classList.remove('hidden');
+            renderProphetGrid();
+        });
+
+        // Kontrol Pause/Play Gerakan SVG
+        const stageEl = document.getElementById('animation-stage');
+        document.getElementById('btn-pause-anim').addEventListener('click', () => {
+            isAnimPaused = !isAnimPaused;
+            const icon = document.getElementById('pause-anim-icon');
+            if (isAnimPaused) {
+                stageEl.classList.add('paused');
+                icon.setAttribute('data-lucide', 'play');
+            } else {
+                stageEl.classList.remove('paused');
+                icon.setAttribute('data-lucide', 'pause');
+            }
+            lucide.createIcons();
+        });
+
+        // Fitur Putar Otomatis Antar Babak (Seperti Story/Video Pendek)
+        function stopAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+            document.getElementById('autoplay-label').textContent = 'Putar Otomatis';
+            document.getElementById('autoplay-icon').setAttribute('data-lucide', 'play');
+            lucide.createIcons();
+        }
+
+        document.getElementById('btn-autoplay').addEventListener('click', () => {
+            if (autoPlayInterval) {
+                stopAutoPlay();
+            } else {
+                document.getElementById('autoplay-label').textContent = 'Berhenti';
+                document.getElementById('autoplay-icon').setAttribute('data-lucide', 'square');
+                lucide.createIcons();
+                showToast('Memutar babak otomatis setiap 5 detik', '🎬');
+
+                autoPlayInterval = setInterval(() => {
+                    if (currentSceneIndex < currentProphet.scenes.length - 1) {
+                        currentSceneIndex++;
+                        renderScene();
+                    } else {
+                        stopAutoPlay();
+                        markCurrentProphetLearned();
+                    }
+                }, 5000);
+            }
+        });
+
+        // Tandai Kisah Selesai Dipelajari
+        function markCurrentProphetLearned() {
+            if (!currentProphet) return;
+            if (!userState.completedIds.includes(currentProphet.id)) {
+                userState.completedIds.push(currentProphet.id);
+                saveUserState();
+                updateMarkLearnedButton();
+                showToast(`MasyaAllah! Teladan ${currentProphet.name} selesai dipelajari!`, '🌿');
+            } else {
+                showToast('Kisah ini sudah ada dalam catatan belajarmu', '✨');
+            }
+        }
+
+        function updateMarkLearnedButton() {
+            const btn = document.getElementById('btn-mark-learned');
+            const isDone = currentProphet && userState.completedIds.includes(currentProphet.id);
+            if (isDone) {
+                btn.className = 'w-full py-3 rounded-2xl bg-sage-100 dark:bg-sage-800 text-sage-700 dark:text-sage-200 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all';
+                btn.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 text-sage-500"></i> <span>Telah Dipelajari (Alhamdulillah)</span>`;
+            } else {
+                btn.className = 'w-full py-3 rounded-2xl bg-sage-500 hover:bg-sage-600 text-white text-xs sm:text-sm font-bold shadow-sm flex items-center justify-center gap-2 active:scale-98 transition-all';
+                btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> <span>Tandai Kisah Selesai Dipelajari</span>`;
+            }
+            lucide.createIcons();
+        }
+
+        document.getElementById('btn-mark-learned').addEventListener('click', markCurrentProphetLearned);
+
+        // ---------------------------------------------------------
+        // 6. INISIALISASI AWAL
+        // ---------------------------------------------------------
+        window.addEventListener('DOMContentLoaded', () => {
+            applyTheme();
+            updateCompletedBadge();
+            renderProphetGrid();
+        });
+    </script>
+</body>
+</html>
